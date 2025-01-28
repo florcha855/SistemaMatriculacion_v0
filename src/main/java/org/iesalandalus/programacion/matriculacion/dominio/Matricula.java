@@ -32,12 +32,30 @@ public class Matricula {
     }
 
     public Matricula(Matricula otra) {
-        this(otra.identificador, otra.alumno, otra.cicloFormativo, new ArrayList<>(otra.asignaturas),
-                otra.fechaMatricula, otra.cursoAcademico);
+        if (otra == null) {
+            throw new IllegalArgumentException("No se puede copiar una matrícula nula.");
+        }
+        this.identificador = otra.identificador;
+        this.alumno = new Alumno(otra.alumno);
+        this.cicloFormativo = new CicloFormativo(otra.cicloFormativo);
+        this.asignaturas = new ArrayList<>(otra.asignaturas);
+        this.fechaMatricula = otra.fechaMatricula;
         this.fechaAnulacion = otra.fechaAnulacion;
+        this.cursoAcademico = otra.cursoAcademico;
     }
 
     public Matricula(Alumno alumno, CicloFormativo cicloFormativo, List<Asignatura> asignaturas) {
+        int identificador = Math.abs(Objects.hash(alumno, cicloFormativo, LocalDate.now()));
+        String cursoAcademico = String.format("%02d-%02d",
+                LocalDate.now().getYear() % 100,
+                (LocalDate.now().getYear() + 1) % 100);
+
+        setIdentificador(identificador);
+        setAlumno(alumno);
+        setCicloFormativo(cicloFormativo);
+        setAsignaturas(asignaturas);
+        setFechaMatricula(LocalDate.now());
+        setCursoAcademico(cursoAcademico);
     }
 
     public int getIdentificador() {
@@ -46,7 +64,7 @@ public class Matricula {
 
     public void setIdentificador(int identificador) {
         if (identificador <= 0) {
-            throw new IllegalArgumentException("El identificador debe ser un número positivo.");
+            throw new IllegalArgumentException("El identificador debe ser un numero positivo.");
         }
         this.identificador = identificador;
     }
@@ -76,7 +94,7 @@ public class Matricula {
             throw new IllegalArgumentException("La lista de asignaturas no puede ser nula o vacía.");
         }
         if (asignaturas.size() > MAX_ASIGNATURAS) {
-            throw new IllegalArgumentException("El número máximo de asignaturas es " + MAX_ASIGNATURAS + ".");
+            throw new IllegalArgumentException("El numero maximo de asignaturas es " + MAX_ASIGNATURAS + ".");
         }
         this.asignaturas = new ArrayList<>(asignaturas);
     }
@@ -90,7 +108,7 @@ public class Matricula {
             throw new IllegalArgumentException("La fecha de matrícula no puede ser nula.");
         }
         if (ChronoUnit.DAYS.between(fechaMatricula, LocalDate.now()) > MAX_DIAS_RETRASO) {
-            throw new IllegalArgumentException("La matrícula no puede registrarse con más de " + MAX_DIAS_RETRASO + " días de retraso.");
+            throw new IllegalArgumentException("La matrícula no puede registrarse con mas de " + MAX_DIAS_RETRASO + " dias de retraso.");
         }
         this.fechaMatricula = fechaMatricula;
     }
@@ -102,10 +120,10 @@ public class Matricula {
     public void setFechaAnulacion(LocalDate fechaAnulacion) {
         if (fechaAnulacion != null) {
             if (fechaAnulacion.isBefore(fechaMatricula)) {
-                throw new IllegalArgumentException("La fecha de anulación no puede ser anterior a la fecha de matrícula.");
+                throw new IllegalArgumentException("La fecha de anulacion no puede ser anterior a la fecha de matricula.");
             }
             if (ChronoUnit.MONTHS.between(fechaMatricula, fechaAnulacion) > MAX_MESES_ANULACION) {
-                throw new IllegalArgumentException("La fecha de anulación no puede superar los " + MAX_MESES_ANULACION + " meses desde la fecha de matrícula.");
+                throw new IllegalArgumentException("La fecha de anulacion no puede superar los " + MAX_MESES_ANULACION + " meses desde la fecha de matricula.");
             }
         }
         this.fechaAnulacion = fechaAnulacion;
@@ -140,25 +158,11 @@ public class Matricula {
         return Objects.hash(identificador);
     }
 
-    public String asignaturasMatricula() {
-        return asignaturas.stream()
-                .map(Asignatura::getNombre)
-                .reduce((a, b) -> a + ", " + b)
-                .orElse("");
-    }
-
-    public String imprimir() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String fechaAnulacionStr = fechaAnulacion != null ? fechaAnulacion.format(formatter) : "No anulada";
-        return String.format("Matrícula con identificador: %d para el alumno: %s %s, DNI: %s, en el ciclo: %s, curso: %s, fecha de matrícula: %s, fecha de anulación: %s",
-                identificador, alumno.getNombre(), alumno.getDni(),
-                cicloFormativo.getNombre(), cursoAcademico, fechaMatricula.format(formatter), fechaAnulacionStr);
-    }
-
     @Override
     public String toString() {
-        return String.format("Matrícula [identificador=%d, alumno=%s, ciclo formativo=%s, fecha matrícula=%s, fecha anulación=%s, curso académico=%s]",
-                identificador, alumno, cicloFormativo, fechaMatricula, fechaAnulacion, cursoAcademico);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return String.format("Matricula [identificador=%d, alumno=%s, ciclo formativo=%s, fecha matricula=%s, fecha anulacion=%s, curso academico=%s]",
+                identificador, alumno, cicloFormativo, fechaMatricula.format(formatter),
+                fechaAnulacion != null ? fechaAnulacion.format(formatter) : "No anulada", cursoAcademico);
     }
 }
-

@@ -44,7 +44,7 @@ public class Asignatura {
 
     private void setIdentificador(String identificador) {
         if (identificador == null || !identificador.matches("\\d{4}")) {
-            throw new IllegalArgumentException("El identificador debe ser un número de cuatro dígitos.");
+            throw new IllegalArgumentException("El identificador debe ser un numero de cuatro digitos.");
         }
         this.identificador = identificador;
     }
@@ -55,7 +55,7 @@ public class Asignatura {
 
     public void setNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede ser nulo o vacío.");
+            throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
         }
         this.nombre = nombre;
     }

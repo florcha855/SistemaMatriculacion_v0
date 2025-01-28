@@ -14,8 +14,8 @@ public class CicloFormativo {
     public CicloFormativo(String identificador, String nombre, int horas, Grado grado) {
         setIdentificador(identificador);
         setNombre(nombre);
-        setHoras(horas);
         setGrado(grado);
+        this.horas = 0;
     }
 
     public CicloFormativo(CicloFormativo otroCiclo) {
@@ -37,7 +37,7 @@ public class CicloFormativo {
 
     private void setIdentificador(String identificador) {
         if (identificador == null || !identificador.matches("\\d{4}")) {
-            throw new IllegalArgumentException("El identificador debe ser un número de cuatro dígitos.");
+            throw new IllegalArgumentException("El identificador debe ser un numero de cuatro digitos.");
         }
         this.identificador = identificador;
     }
@@ -48,7 +48,7 @@ public class CicloFormativo {
 
     public void setNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede ser nulo o vacío.");
+            throw new IllegalArgumentException("El nombre no puede ser nulo o vacio.");
         }
         this.nombre = nombre;
     }

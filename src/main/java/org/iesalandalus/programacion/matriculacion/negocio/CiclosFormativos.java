@@ -1,7 +1,5 @@
 package org.iesalandalus.programacion.matriculacion.negocio;
 import org.iesalandalus.programacion.matriculacion.dominio.CicloFormativo;
-
-
 import java.util.ArrayList;
 import java.util.List;
 

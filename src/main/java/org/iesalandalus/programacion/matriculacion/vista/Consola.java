@@ -1,7 +1,5 @@
 package org.iesalandalus.programacion.matriculacion.vista;
-
 import org.iesalandalus.programacion.matriculacion.dominio.*;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -17,7 +15,7 @@ public class Consola {
     private Consola() {}
 
     public static void mostrarMenu() {
-        System.out.println("Seleccione una opción:");
+        System.out.println("Seleccione una opcion:");
         for (Opcion opcion : Opcion.values()) {
             System.out.println(opcion.ordinal() + ". " + opcion);
         }
@@ -26,7 +24,7 @@ public class Consola {
     public static Opcion elegirOpcion() {
         int eleccion;
         do {
-            System.out.print("Introduzca el número de la opción deseada: ");
+            System.out.print("Introduzca el numero de la opcion deseada: ");
             eleccion = Integer.parseInt(scanner.nextLine());
         } while (eleccion < 0 || eleccion >= Opcion.values().length);
         return Opcion.values()[eleccion];
@@ -39,7 +37,7 @@ public class Consola {
         String dni = scanner.nextLine();
         System.out.print("Introduzca el correo del alumno: ");
         String correo = scanner.nextLine();
-        System.out.print("Introduzca el teléfono del alumno: ");
+        System.out.print("Introduzca el telefono del alumno: ");
         String telefono = scanner.nextLine();
         LocalDate fechaNacimiento = leerFecha();
         return new Alumno(nombre, dni, correo, telefono, fechaNacimiento);
@@ -48,19 +46,20 @@ public class Consola {
     public static Alumno getAlumnoPorDni() throws Exception {
         System.out.print("Introduzca el DNI del alumno: ");
         String dni = scanner.nextLine();
-        return new Alumno("Nombre Ficticio", dni, "correo@ficticio.com", "600000000", LocalDate.now().minusYears(18));
+        return new Alumno("Sunombre", "dni", "Sucorreo@ejemplo.com", "500000000", LocalDate.now().minusYears(18));
     }
 
     public static LocalDate leerFecha() {
         LocalDate fecha = null;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("""
+                dd/mm/yyyy""");
         while (fecha == null) {
             try {
-                System.out.print("Introduzca la fecha (dd/MM/yyyy): ");
+                System.out.print("Introduzca la fecha (dd/mm/yyyy): ");
                 String fechaStr = scanner.nextLine();
                 fecha = LocalDate.parse(fechaStr, formatter);
             } catch (DateTimeParseException e) {
-                System.out.println("Formato de fecha inválido. Intente nuevamente.");
+                System.out.println("Formato de fecha invalido. Intente nuevamente.");
             }
         }
         return fecha;
@@ -80,7 +79,7 @@ public class Consola {
     }
 
     public static CicloFormativo leerCicloFormativo() throws Exception {
-        System.out.print("Introduzca el código del ciclo formativo: ");
+        System.out.print("Introduzca el codigo del ciclo formativo: ");
         String codigo = scanner.nextLine();
         System.out.print("Introduzca el nombre del ciclo formativo: ");
         String nombre = scanner.nextLine();
@@ -88,16 +87,16 @@ public class Consola {
         return new CicloFormativo(codigo, nombre, grado);
     }
 
-    public static void mostrarCiclosFormativos(List<CicloFormativo> ciclos) {
+    public static void mostrarCiclosFormativos(CicloFormativo[] ciclos) {
         for (CicloFormativo ciclo : ciclos) {
             System.out.println(ciclo);
         }
     }
 
     public static CicloFormativo getCicloFormativoPorCodigo() throws Exception {
-        System.out.print("Introduzca el código del ciclo formativo: ");
+        System.out.print("Introduzca el codigo del ciclo formativo: ");
         String codigo = scanner.nextLine();
-        return new CicloFormativo(codigo, "Nombre Ficticio", Grado.GDCFGS);
+        return new CicloFormativo(codigo, "Nombre de ejemplo", Grado.GDCFGS);
     }
 
     public static Curso leerCurso() {
@@ -127,7 +126,7 @@ public class Consola {
     }
 
     public static Asignatura leerAsignatura() throws Exception {
-        System.out.print("Introduzca el código de la asignatura: ");
+        System.out.print("Introduzca el codigo de la asignatura: ");
         String codigo = scanner.nextLine();
         System.out.print("Introduzca el nombre de la asignatura: ");
         String nombre = scanner.nextLine();
@@ -137,12 +136,12 @@ public class Consola {
     }
 
     public static Asignatura getAsignaturaPorCodigo() throws Exception {
-        System.out.print("Introduzca el código de la asignatura: ");
+        System.out.print("Introduzca el codigo de la asignatura: ");
         String codigo = scanner.nextLine();
-        return new Asignatura(codigo, "Nombre Ficticio", Curso.PRIMERO, EspecialidadProfesorado.INFORMATICA);
+        return new Asignatura(codigo, "Nombre de ejemplo", Curso.PRIMERO, EspecialidadProfesorado.INFORMATICA);
     }
 
-    public static void mostrarAsignaturas(List<Asignatura> asignaturas) {
+    public static void mostrarAsignaturas(Asignatura[] asignaturas) {
         for (Asignatura asignatura : asignaturas) {
             System.out.println(asignatura);
         }
@@ -152,31 +151,46 @@ public class Consola {
         return asignaturas.contains(asignatura);
     }
 
-    public static Matricula leerMatricula() throws Exception {
-        Alumno alumno = leerAlumno();
-        CicloFormativo cicloFormativo = leerCicloFormativo();
-        List<Asignatura> asignaturas = new ArrayList<>();
+    public static Asignatura[] elegirAsignaturasMatricula(Asignatura[] asignaturasDisponibles) {
+        List<Asignatura> asignaturasElegidas = new ArrayList<>();
         String respuesta;
         do {
-            Asignatura asignatura = leerAsignatura();
-            if (!asignaturaYaMatriculada(asignaturas, asignatura)) {
-                asignaturas.add(asignatura);
+            System.out.println("Asignaturas disponibles:");
+            for (int i = 0; i < asignaturasDisponibles.length; i++) {
+                System.out.println(i + ". " + asignaturasDisponibles[i]);
+            }
+            System.out.print("Elija el numero de la asignatura: ");
+            int eleccion = Integer.parseInt(scanner.nextLine());
+            if (eleccion >= 0 && eleccion < asignaturasDisponibles.length) {
+                Asignatura asignaturaElegida = asignaturasDisponibles[eleccion];
+                if (!asignaturaYaMatriculada(asignaturasElegidas, asignaturaElegida)) {
+                    asignaturasElegidas.add(asignaturaElegida);
+                } else {
+                    System.out.println("La asignatura ya esta matriculada.");
+                }
             } else {
-                System.out.println("La asignatura ya está matriculada.");
+                System.out.println("Eleccion inválida.");
             }
             System.out.print("¿Desea añadir otra asignatura? (S/N): ");
             respuesta = scanner.nextLine();
         } while (respuesta.equalsIgnoreCase("S"));
-        return new Matricula(alumno, cicloFormativo, asignaturas);
+
+        return asignaturasElegidas.toArray(new Asignatura[0]);
+    }
+
+    public static Matricula leerMatricula(Alumno alumno, Asignatura[] asignaturasElegidas) throws Exception {
+        CicloFormativo cicloFormativo = leerCicloFormativo();
+        return new Matricula(alumno, cicloFormativo, List.of(asignaturasElegidas));
     }
 
     public static Matricula getMatriculaPorIdentificador() throws Exception {
-        System.out.print("Introduzca el identificador de la matrícula: ");
+        System.out.print("Introduzca el identificador de la matricula: ");
         String identificador = scanner.nextLine();
-        Alumno alumno = new Alumno("Nombre Ficticio", "12345678A", "correo@ficticio.com", "600000000", LocalDate.now().minusYears(18));
-        CicloFormativo cicloFormativo = new CicloFormativo("CF001", "Ciclo Ficticio", Grado.GDCFGS);
+        Alumno alumno = new Alumno("SuNombre", "12345678A", "correo@ejemplo.com", "500000000", LocalDate.now().minusYears(18));
+        CicloFormativo cicloFormativo = new CicloFormativo("CF001", "Ciclo de ejemplo", Grado.GDCFGS);
         List<Asignatura> asignaturas = new ArrayList<>();
-        asignaturas.add(new Asignatura("AS001", "Asignatura Ficticia", Curso.PRIMERO, EspecialidadProfesorado.INFORMATICA));
+        asignaturas.add(new Asignatura("AS001", "Asignatura de ejemplo", Curso.PRIMERO, EspecialidadProfesorado.INFORMATICA));
         return new Matricula(alumno, cicloFormativo, asignaturas);
     }
 }
+

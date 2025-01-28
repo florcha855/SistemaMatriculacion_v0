@@ -1,6 +1,5 @@
 package org.iesalandalus.programacion.matriculacion.negocio;
 import org.iesalandalus.programacion.matriculacion.dominio.Alumno;
-
 import java.util.ArrayList;
 import java.util.List;
 

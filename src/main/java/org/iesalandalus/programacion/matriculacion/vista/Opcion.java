@@ -20,7 +20,6 @@ public enum Opcion {
     MOSTRAR_MATRICULAS_ALUMNO ("Muestra las matriculas de un alumno"),
     MOSTRAR_MATRICULAS_CICLOFORMATIVO ("Muestra las matriculas de un ciclo formativo"),
     MOSTRAR_MATRICULAS_CURSOACADEMICO ("Muestra las matriculas de un curso academico"),
-
     SALIR("Salir");
 
     private String mensaje;
